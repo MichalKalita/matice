@@ -35,7 +35,10 @@ int main(int argc, char **args) {
 
     print(array, cols, rows);
 
-    double **triangle = gauss_elimination(array, cols, rows);
+    double **triangle = gauss_elimination((const double **) array, cols, rows);
+
+    print(array, cols, rows);
+
     if (triangle != 0) {
         cout << "Vypocteno" << endl;
         print(triangle, cols, rows);
@@ -276,21 +279,27 @@ void make_bigger(double **&array, unsigned int &size) {
 }
 
 
-double **gauss_elimination(double **array, unsigned int cols, unsigned int rows) {
+double **gauss_elimination(const double **array_source, unsigned int cols, unsigned int rows) {
     if (rows != cols - 1) {
         return 0;
     }
 
     int i, j, k;
-    double c, sum, *values, **result;
+    double c, sum, *values, **array;
     values = new double[rows];
-    result = new double *[rows]; // vytvori pole ukazatelu
+    array = new double *[rows]; // vytvori pole ukazatelu
+
+    for (i = 0; i < rows; ++i) { // kopirovani celeho pole
+        array[i] = new double[cols];
+        copy(array_source[i], array_source[i] + cols, array[i]); // kopirovani dat
+    }
 
     // upravi pole ze vlevo dole jsou nuly
     for (j = 0; j < rows; j++) // prochazi cele pole po radcich
     {
         for (i = j + 1; i < rows; i++) { // prochazi vsechny radky pod radkem j
-            c = array[i][j] / array[j][j]; // konstanta, kterou se musi vynasobit hodnoty radku, slo vyrobit nulu
+            c = array[i][j] /
+                array[j][j]; // konstanta, kterou se musi vynasobit hodnoty radku, slo vyrobit nulu
             for (k = 0; k <= rows; k++) {
                 array[i][k] = array[i][k] - c * array[j][k]; // nasobeni vsech hodnot v radku
             }
@@ -308,20 +317,16 @@ double **gauss_elimination(double **array, unsigned int cols, unsigned int rows)
 
     // vygeneruje vystupni pole, ktere ma hodnoty v hezkem tvaru
     for (i = 0; i < rows; ++i) {
-        result[i] = new double[cols]; // vytvoru radek pole
-        for (j = 0; j < cols - 1; ++j) {
-            if (i == j) {
-                result[i][j] = 1;
-            } else {
-                result[i][j] = 0;
-            }
+        array[i][i] = 1;
+        for (j = i + 1; j < cols - 1; ++j) {
+            array[i][j] = 0;
         }
-        result[i][cols - 1] = values[i];
+        array[i][cols - 1] = values[i];
     }
 
     delete[] values;
 
-    return result;
+    return array;
 }
 
 void saveToFile(double **array, unsigned int cols, unsigned int rows) {

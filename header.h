@@ -22,7 +22,7 @@ void optimize_array_size(double **&array, unsigned int size);
 
 void print(double **array, unsigned int cols, unsigned int rows);
 
-double **gauss_elimination(double **array, unsigned int cols, unsigned int rows);
+double **gauss_elimination(const double **array_source, unsigned int cols, unsigned int rows);
 
 void saveToFile(double **array, unsigned int cols, unsigned int rows);
 
