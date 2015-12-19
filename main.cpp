@@ -14,7 +14,6 @@ int main(int argc, char **args) {
         if (character == 'a' || character == 'A') {
             array = load_matrix_file(rows, cols);
         } else {
-            cout << "load_matrix_user" << endl;
             array = load_matrix_user(rows, cols);
         }
     }
@@ -37,8 +36,6 @@ int main(int argc, char **args) {
 
     double **triangle = gauss_elimination((const double **) array, cols, rows);
 
-    print(array, cols, rows);
-
     if (triangle != 0) {
         cout << "Vypocteno" << endl;
         print(triangle, cols, rows);
@@ -48,7 +45,6 @@ int main(int argc, char **args) {
         }
 
         cout << "Chcete ulozit do souboru? [a/n]: ";
-//        cin.ignore(INT_MAX, '\n'); // maze vsechna data na vstupu
         cin >> character;
         if (character == 'a' || character == 'A' || character == '\n') {
             saveToFile(triangle, cols, rows);
@@ -164,11 +160,12 @@ double **load_matrix_user(unsigned int &rows, unsigned int &cols) {
     unsigned int array_rows = 3, array_cols = 4;
     double **array;
 
-    cout << "Nazdar, zadej matici:" << endl;
+    cout << "Zadejte matici:" << endl;
 
     array = new double *[array_rows]; // pole ukazatelu, bude obsahovat adresy radku
     array[0] = new double[array_cols]; // prvni radek matice
 
+    cin.ignore(INT_MAX, '\n'); // maze vsechna data na vstupu
     // nacinatni prvniho radku matice
     while (cin.peek() != '\n') {
         if (cols >= array_cols) { // neni misto v poli, je treba zvetsit pole
