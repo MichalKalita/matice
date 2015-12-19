@@ -1,5 +1,18 @@
 #include "functions.h"
 
+bool clear_stream(istream &in) {
+    int c;
+
+    while (1) {
+        c = in.peek();
+        if (c == '\n' || c == EOF)
+            return false;
+        if (!isspace(c))
+            return true;
+        in.get();
+    }
+}
+
 double **load_matrix_file(char *file_ch, unsigned int &rows, unsigned int &cols) {
     ifstream file;
     file.open(file_ch);
@@ -18,7 +31,7 @@ double **load_matrix_file(char *file_ch, unsigned int &rows, unsigned int &cols)
     cols = rows = 0;
 
     // nacintani prvniho radku matice
-    while (file.peek() != '\n') {
+    while (clear_stream(file)) {
         if (cols >= array_cols) { // neni misto v poli, je treba zvetsit pole
             make_bigger(array[0], array_cols);
         }
@@ -97,7 +110,7 @@ double **load_matrix_user(unsigned int &rows, unsigned int &cols) {
 
     cin.ignore(INT_MAX, '\n'); // maze vsechna data na vstupu
     // nacinatni prvniho radku matice
-    while (cin.peek() != '\n') {
+    while (clear_stream(cin)) {
         if (cols >= array_cols) { // neni misto v poli, je treba zvetsit pole
             make_bigger(array[0], array_cols);
         }

@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <regex>
+#include <cctype>
 
 using namespace std;
 
@@ -35,5 +36,7 @@ double **load_matrix_user(unsigned int &rows, unsigned int &cols);
 double **load_matrix_file(unsigned int &rows, unsigned int &cols);
 
 double **load_matrix_file(char *file_ch, unsigned int &rows, unsigned int &cols);
+
+bool clear_stream(istream &in);
 
 #endif //MATICE_HEADER_H
