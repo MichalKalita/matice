@@ -89,8 +89,8 @@ int main() {
             cout << "x" << iterator + 1 << " = " << triangle[iterator][cols - 1] << endl;
         }
 
-        // TODO: clear input stream
         cout << "Chcete ulozit do souboru? [A/n]: ";
+        cin.ignore(INT_MAX, '\n'); // maze vsechna data na vstupu
         cin.get(character);
         if (character == 'a' || character == 'A' || character == '\n') {
             saveToFile(triangle, cols, rows);
@@ -216,6 +216,7 @@ void saveToFile(double **array, unsigned int cols, unsigned int rows) {
     string output_file;
     char character;
 
+    cin.ignore(INT_MAX, '\n'); // maze vsechna data na vstupu
     while (1) {
         cout << "Zadejte nazev souboru: ";
         getline(cin, output_file);
@@ -269,16 +270,15 @@ void saveToFile(double **array, unsigned int cols, unsigned int rows) {
 
     file << "</body>\n"
             "</html>\n";
+
+    cout << "Data byla ulozena do souboru " << output_file << endl;
 }
 
 bool inline file_exist(const string &name) {
     ifstream file;
     file.open(name.c_str());
-    if (file.good()) {
+    {
         file.close();
-        return true;
-    } else {
-        file.close();
-        return false;
+        return file.good();
     }
 }
