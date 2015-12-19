@@ -22,6 +22,8 @@ void saveToFile(double **array, unsigned int cols, unsigned int rows);
 
 bool inline file_exist(const string &name);
 
+double get_number();
+
 int main() {
     double **array = NULL;
     unsigned int rows = 0, cols = 0, array_rows = 1, array_cols = 10;
@@ -38,7 +40,7 @@ int main() {
         if (cols >= array_cols) { // neni misto v poli, je treba zvetsit pole
             make_bigger(array[0], array_cols);
         }
-        cin >> array[0][cols];
+        array[0][cols] = get_number(); // TODO: udelat uzivatelsky privetivejsi
         ++cols;
     }
 
@@ -65,7 +67,7 @@ int main() {
         array[rows] = new double[cols];
 
         for (int col = 0; col < cols; ++col) {
-            cin >> array[rows][col];
+            array[rows][col] = get_number();
         }
 
         cin.get();
@@ -96,7 +98,7 @@ int main() {
             saveToFile(triangle, cols, rows);
         }
     } else {
-        cout << "Nelze vypocitat gaussovu eliminacni metodou." << endl;
+        cout << "Nelze vypocitat pomoci gaussovy eliminacni metody" << endl;
     }
 
     if (triangle != 0) {
@@ -114,6 +116,21 @@ int main() {
     delete[] array;
 
     return 0;
+}
+
+double get_number() {
+    double number;
+    cin.clear();
+    cin >> number;
+    while(cin.fail()) {
+        cout << endl;
+        cout << "Spatny vstup, zadejte cislo: ";
+        cin.clear();
+        cin.ignore(INT_MAX, '\n');
+        cin >> number;
+        cout << endl;
+    }
+    return number;
 }
 
 void print(double **array, unsigned int cols, unsigned int rows) {
@@ -165,7 +182,6 @@ void make_bigger(double **&array, unsigned int &size) {
 
 double **gauss_elimination(double **array, unsigned int cols, unsigned int rows) {
     if (rows != cols - 1) {
-        cout << "Nelze vypocitat pomoci gaussovy eliminacni metody" << endl;
         return 0;
     }
 
