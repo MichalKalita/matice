@@ -11,6 +11,7 @@
 #include <regex>
 #include <cctype>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 

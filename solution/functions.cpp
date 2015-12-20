@@ -92,10 +92,10 @@ double **load_matrix_file(char *file_ch, unsigned int &rows, unsigned int &cols)
 
 double **load_matrix_file(unsigned int &rows, unsigned int &cols) {
     char file[256];
+    clear_stream(cin);
     while (1) {
-        cin.ignore(INT_MAX, '\n'); // maze vsechna data na vstupu
         cout << "Nazev souboru: ";
-        cin.getline(file, 256);
+        cin.getline(file, 256, '\n');
         if (file_exist(file))
             break;
         cout << "Chyba, soubor neexistuje" << endl;
@@ -228,7 +228,7 @@ double **gauss_elimination(const double **array_source, unsigned int cols, unsig
         return 0;
     }
 
-    int i, j, k;
+    int i, j, k, problem_row = -1;
     double c, sum, *values, **array;
     values = new double[rows];
     array = new double *[rows]; // vytvori pole ukazatelu
@@ -244,10 +244,22 @@ double **gauss_elimination(const double **array_source, unsigned int cols, unsig
     for (j = 0; j < rows; j++) // prochazi cele pole po radcich
     {
         for (i = j + 1; i < rows; i++) { // prochazi vsechny radky pod radkem j
+            if (array[j][j] == 0) {
+                solve_zero_problem(array, cols, rows);
+
+                if (problem_row == j) {
+                    return nullptr;
+                } else {
+                    problem_row = j;
+                }
+            }
             c = array[i][j] /
                 array[j][j]; // konstanta, kterou se musi vynasobit hodnoty radku, slo vyrobit nulu
             for (k = 0; k <= rows; k++) {
                 array[i][k] = array[i][k] - c * array[j][k]; // nasobeni vsech hodnot v radku
+                if(abs(array[i][k]) < 1e-9) { // pokud je cislo hodne blizko nule, bere jej jako nulu
+                    array[i][k] = 0;
+                }
             }
         }
     }
@@ -275,65 +287,50 @@ double **gauss_elimination(const double **array_source, unsigned int cols, unsig
     return array;
 }
 
+/**
+ * Na hlavni diagonale nesmi byt nuly, ani o jednu diagonalu pod hlavni, nesmi byt nuly
+ * @param array vstupne vystupni dvojrozmerne pole
+ * @param cols pocet sloupcu
+ * @param rows pocet radku
+ * @return zdarilo se odstranit nuly z hlavni diagonaly
+ */
 bool solve_zero_problem(double **&array, unsigned int cols, unsigned int rows) {
-    int *zero_rows = new int[rows];
-    int count_zero_rows = 0;
-    double sum;
-    double *possible_const = new double[cols];
-    int a, b, i, j;
-    bool row_completed = false;
+    int a, b, c, optimal, max_count_zero, count_zero;
 
-    for (a = 0; a < rows; ++a) { // hleda radky ve kterych se vyskytuje nula
-        for (b = 0; b < cols - 1; ++b) {
-            if (array[a][b] == 0) {
-                zero_rows[count_zero_rows++] = a;
-                break;
-            }
+    for (a = 0; a < rows; ++a) {
+        // hledame radek, ktery by sel vymenit
+        // nejoptimalnejsi je ten, ktery ma nejvic nul, ale nema je na pozici diagonaly
+        optimal = -1;
+        max_count_zero = 0;
+        for (c = 0; c < cols - 1; ++c) {
+            if (array[a][c] == 0)
+                max_count_zero++;
         }
-    }
-
-    for (i = 0; i < count_zero_rows; ++i) {
-        b = zero_rows[i];
-
-        for (a = 0; a < rows; ++a) {
-            if (a == b)
+        for (b = a + 1; b < rows; ++b) {
+            if (array[b][a] == 0 || array[a][b] == 0) // nelze vymenit, na hlavni diagonale je nula
                 continue;
 
-            sum = 0;
-
-            for (j = 0; j < cols - 1; ++j) {
-                if (array[a][j] == 0 && array[b][j] == 0)
-                    break;
-
-                if (array[a][j] == 0 || array[b][j] == 0)
-                    continue;
-
-                sum += abs(array[b][j] / array[a][j]) + 1;
+            count_zero = 0;
+            for (c = 0; c < cols - 1; ++c) {
+                if (array[b][c] == 0)
+                    count_zero++;
             }
 
-            if (sum == 0)
-                continue;
-
-            // vynasebeni jednoho radku konstantou
-            for (j = 0; j < cols; ++j) {
-                array[b][j] += sum * array[a][j];
+            // pokud je array[a][a] nula, pouzije nahradu i za cenu ze neni optimalni
+            // pokud ma vice nul jak predesly vysledek
+            if (count_zero > max_count_zero || (array[a][a] == 0 && optimal == -1)) {
+                optimal = b; // optimalni radek pro vymenu je tenhle radek
+                max_count_zero = count_zero;
             }
-
-            row_completed = true;
-            break;
         }
-
-        if (row_completed) {
-            row_completed = false;
-            continue;
-        } else if (a == rows - 1) { // proslo vsechny radky a nebylo nalezeno reseni
-            return false;
+        if (optimal == -1) { // nenalezena lepsi moznost
+            if (array[a][a] == 0) { // nebylo nalezeno reseni, na diagonale je nule, nelze vypocitat matici
+                return false;
+            }
+        } else {
+            swap(array[a], array[optimal]);
         }
     }
-
-    delete[] zero_rows;
-    delete[] possible_const;
-
     return true;
 }
 
