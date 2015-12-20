@@ -36,8 +36,18 @@ int main(int argc, char **args) {
 
     double **triangle = gauss_elimination((const double **) array, cols, rows);
 
+    if (cols > 3) {
+        cout << "Nelze vypocitat determinant" << endl;
+    } else {
+        double det = determinant(array, cols, rows);
+        if (det != INFINITY) {
+            cout << "Determinant matice je: " << det << endl;
+        } else {
+            cout << "Nelze vypocitat determinant" << endl;
+        }
+    }
+
     if (triangle != 0) {
-        cout << "Vypocteno" << endl;
         print(triangle, cols, rows);
 
         for (iterator = 0; iterator < rows; ++iterator) {
@@ -51,17 +61,6 @@ int main(int argc, char **args) {
         }
     } else {
         cout << "Nelze vypocitat pomoci gaussovy eliminacni metody" << endl;
-    }
-
-    if (cols > 3) {
-        cout << "Nelze vypocitat determinant" << endl;
-    } else {
-        double det = determinant(array, cols, rows);
-        if (det != INFINITY) {
-            cout << "Determinant matice je: " << det << endl;
-        } else {
-            cout << "Nelze vypocitat determinant" << endl;
-        }
     }
 
     // mazani dat
