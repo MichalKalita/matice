@@ -41,7 +41,7 @@ double **load_matrix_file(char *file_ch, unsigned int &rows, unsigned int &cols)
 
     cols = rows = 0;
 
-    // nacintani prvniho radku matice
+    // nacitani prvniho radku matice
     while (clear_stream(file)) {
         if (cols >= array_cols) { // neni misto v poli, je treba zvetsit pole
             make_bigger(array[0], array_cols);

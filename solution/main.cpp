@@ -50,8 +50,6 @@ int main(int argc, char **args) {
 
     print(array, cols, rows);
 
-    double **triangle = gauss_elimination((const double **) array, cols, rows);
-
     if (cols > 3) {
         cout << "Nelze vypocitat determinant" << endl;
     } else {
@@ -63,6 +61,7 @@ int main(int argc, char **args) {
         }
     }
 
+    double **triangle = gauss_elimination((const double **) array, cols, rows);
     if (triangle != 0) {
         print(triangle, cols, rows);
 
