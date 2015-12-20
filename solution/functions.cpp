@@ -1,3 +1,10 @@
+/**
+ * @file functions.cpp
+ * Zdrojovy kod vsech funkci
+ *
+ * @author Michal Kalita
+ */
+
 #include "functions.h"
 
 bool clear_stream(istream &in) {
@@ -189,7 +196,6 @@ void print(double **array, unsigned int cols, unsigned int rows) {
     }
 }
 
-// prekopiruje velke pole do mensiho,
 void optimize_array_size(double *&array, unsigned int size) {
     double *temporary = new double[size]; // novy adresni prostor
     copy(array, array + size, temporary); // kopirovani dat do noveho mensiho prostoru
@@ -221,7 +227,6 @@ void make_bigger(double **&array, unsigned int &size) {
     array = temporary; // do pole je zapsana adresa dat
     size = new_size; // vraceni velikosti pole pres parametr funkce
 }
-
 
 double **gauss_elimination(const double **array_source, unsigned int cols, unsigned int rows) {
     if (rows != cols - 1) {
@@ -287,13 +292,6 @@ double **gauss_elimination(const double **array_source, unsigned int cols, unsig
     return array;
 }
 
-/**
- * Na hlavni diagonale nesmi byt nuly, ani o jednu diagonalu pod hlavni, nesmi byt nuly
- * @param array vstupne vystupni dvojrozmerne pole
- * @param cols pocet sloupcu
- * @param rows pocet radku
- * @return zdarilo se odstranit nuly z hlavni diagonaly
- */
 bool solve_zero_problem(double **&array, unsigned int cols, unsigned int rows) {
     int a, b, c, optimal, max_count_zero, count_zero;
 

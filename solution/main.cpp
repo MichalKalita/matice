@@ -1,6 +1,22 @@
-/** @file */
+/**
+ * @file
+ * @mainpage
+ * <h1>Maticove operace, zadani c. 4</h1>
+ *
+ * pocita hodnoty matice pomoci gaussovy eliminacni metody
+ *
+ * @author Michal Kalita
+ */
+
 #include "functions.h"
 
+/**
+ * Hlavni program
+ * je povolen jeden argument, a to nazev souboru s matici
+ * @param argc pocet argumentu
+ * @param args argumenty
+ * @return 0 pokud program probehl bez chyby
+ */
 int main(int argc, char **args) {
     double **array = NULL;
     unsigned int rows = 0, cols = 0;
