@@ -234,6 +234,8 @@ double **gauss_elimination(const double **array_source, unsigned int cols, unsig
         copy(array_source[i], array_source[i] + cols, array[i]); // kopirovani dat
     }
 
+    solve_zero_problem(array, cols, rows);
+
     // upravi pole ze vlevo dole jsou nuly
     for (j = 0; j < rows; j++) // prochazi cele pole po radcich
     {
@@ -267,6 +269,68 @@ double **gauss_elimination(const double **array_source, unsigned int cols, unsig
     delete[] values;
 
     return array;
+}
+
+bool solve_zero_problem(double **&array, unsigned int cols, unsigned int rows) {
+    int *zero_rows = new int[rows];
+    int count_zero_rows = 0;
+    double sum;
+    double *possible_const = new double[cols];
+    int a, b, i, j;
+    bool row_completed = false;
+
+    for (a = 0; a < rows; ++a) { // hleda radky ve kterych se vyskytuje nula
+        for (b = 0; b < cols - 1; ++b) {
+            if (array[a][b] == 0) {
+                zero_rows[count_zero_rows++] = a;
+                break;
+            }
+        }
+    }
+
+    for (i = 0; i < count_zero_rows; ++i) {
+        b = zero_rows[i];
+
+        for (a = 0; a < rows; ++a) {
+            if (a == b)
+                continue;
+
+            sum = 0;
+
+            for (j = 0; j < cols - 1; ++j) {
+                if (array[a][j] == 0 && array[b][j] == 0)
+                    break;
+
+                if (array[a][j] == 0 || array[b][j] == 0)
+                    continue;
+
+                sum += abs(array[b][j] / array[a][j]) + 1;
+            }
+
+            if (sum == 0)
+                continue;
+
+            // vynasebeni jednoho radku konstantou
+            for (j = 0; j < cols; ++j) {
+                array[b][j] += sum * array[a][j];
+            }
+
+            row_completed = true;
+            break;
+        }
+
+        if (row_completed) {
+            row_completed = false;
+            continue;
+        } else if (a == rows - 1) { // proslo vsechny radky a nebylo nalezeno reseni
+            return false;
+        }
+    }
+
+    delete[] zero_rows;
+    delete[] possible_const;
+
+    return true;
 }
 
 void saveToFile(double **array, unsigned int cols, unsigned int rows) {

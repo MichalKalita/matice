@@ -10,6 +10,7 @@
 #include <fstream>
 #include <regex>
 #include <cctype>
+#include <cmath>
 
 using namespace std;
 
@@ -38,5 +39,7 @@ double **load_matrix_file(unsigned int &rows, unsigned int &cols);
 double **load_matrix_file(char *file_ch, unsigned int &rows, unsigned int &cols);
 
 bool clear_stream(istream &in);
+
+bool solve_zero_problem(double **&array, unsigned int cols, unsigned int rows);
 
 #endif //MATICE_HEADER_H
