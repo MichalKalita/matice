@@ -53,6 +53,18 @@ int main(int argc, char **args) {
         cout << "Nelze vypocitat pomoci gaussovy eliminacni metody" << endl;
     }
 
+    if (cols > 3) {
+        cout << "Nelze vypocitat determinant" << endl;
+    } else {
+        double det = determinant(array, cols, rows);
+        if (det != INFINITY) {
+            cout << "Determinant matice je: " << det << endl;
+        } else {
+            cout << "Nelze vypocitat determinant" << endl;
+        }
+    }
+
+    // mazani dat
     if (triangle != 0) {
         delete[] triangle[0];
         for (iterator = 1; iterator < rows; ++iterator) {

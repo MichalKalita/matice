@@ -42,4 +42,6 @@ bool clear_stream(istream &in);
 
 bool solve_zero_problem(double **&array, unsigned int cols, unsigned int rows);
 
+double determinant(double **array, unsigned int cols, unsigned int rows);
+
 #endif //MATICE_HEADER_H

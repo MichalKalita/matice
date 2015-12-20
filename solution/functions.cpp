@@ -5,8 +5,12 @@ bool clear_stream(istream &in) {
 
     while (1) {
         c = in.peek();
-        if (c == '\n' || c == EOF)
+        if (c == '\n') {
+            in.get();
             return false;
+        } else if (c == EOF) {
+            return false;
+        }
         if (!isspace(c))
             return true;
         in.get();
@@ -131,10 +135,10 @@ double **load_matrix_user(unsigned int &rows, unsigned int &cols) {
         array_cols = cols;
     }
 
-    cin.get();
+    clear_stream(cin);
 
     // nacitani dalsich radku
-    for (; cin.peek() != '\n'; ++rows) {
+    for (; clear_stream(cin); ++rows) {
         if (rows >= array_rows) {
             make_bigger(array, array_rows);
         }
@@ -144,7 +148,7 @@ double **load_matrix_user(unsigned int &rows, unsigned int &cols) {
             array[rows][col] = get_number();
         }
 
-        cin.get();
+        clear_stream(cin);
     }
 
     if (rows != array_rows) {
@@ -402,4 +406,32 @@ bool inline file_exist(const string &name) {
         file.close();
         return file.good();
     }
+}
+
+double determinant(double **array, unsigned int cols, unsigned int rows) {
+    if (cols != rows || cols < 2) {
+        return INFINITY;
+    }
+
+    if (cols == 2)
+        return (array[0][0] * array[1][1]) - (array[0][1] * array[1][0]);
+
+    double sum = 0, possitive, negative;
+
+    for (int i = 0; i < rows; ++i) {
+        possitive = negative = 1;
+        for (int j = 0; j < cols; ++j) {
+            if (i + j < rows) {
+                possitive *= array[i + j][j];
+                negative *= array[i + j][cols - j - 1];
+            } else {
+                possitive *= array[i + j - rows][j];
+                negative *= array[i + j - rows][cols - j - 1];
+            }
+        }
+        sum += possitive;
+        sum -= negative;
+    }
+
+    return sum;
 }
